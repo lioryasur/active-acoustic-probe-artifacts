@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this artifact bundle, please cite the camera-ready paper."
+title: "Active Acoustic Probes for Audio Deepfake Detection"
+authors:
+  - family-names: "Yasur"
+    given-names: "Lior"
+  - family-names: "Mirsky"
+    given-names: "Yisroel"
+year: 2026

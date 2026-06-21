@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Active Acoustic Probe Test</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Active Acoustic Probe Test</h1>
+        <p>Play a random high-band probe, record the microphone return, and score it locally.</p>
+      </header>
+
+      <section class="controls">
+        <label>
+          Seed
+          <input id="seed" type="number" value="42" />
+        </label>
+        <label>
+          Amplitude
+          <input id="amplitude" type="number" value="0.08" min="0.01" max="0.5" step="0.01" />
+        </label>
+        <label>
+          Pre-roll (s)
+          <input id="preRoll" type="number" value="0.4" min="0" max="3" step="0.1" />
+        </label>
+        <button id="runButton">Record + play probe</button>
+      </section>
+
+      <section class="status">
+        <h2>Status</h2>
+        <pre id="status">Ready.</pre>
+      </section>
+
+      <section class="results">
+        <h2>Result</h2>
+        <div id="result" class="empty">No run yet.</div>
+        <div class="downloads">
+          <a id="wavLink" hidden download="browser_acoustic_probe.wav">Download WAV</a>
+          <a id="jsonLink" hidden download="browser_acoustic_probe.json">Download JSON</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

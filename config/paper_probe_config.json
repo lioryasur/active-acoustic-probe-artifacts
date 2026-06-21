@@ -1,0 +1,26 @@
+{
+  "probe_name": "timed_two_set_highband_probe",
+  "sample_rate": 44100,
+  "amplitude": 0.08,
+  "gap_s": 0.25,
+  "random_probe": {
+    "seed": 42,
+    "frequency_range_hz": [5500, 7000],
+    "frequency_step_hz": 10,
+    "min_spacing_hz": 100,
+    "sets_per_probe": 2,
+    "tones_per_set": 3,
+    "duration_s": 1.0
+  },
+  "detector": {
+    "peak_search_hz": 5,
+    "sideband_min_hz": 100,
+    "sideband_max_hz": 500,
+    "window_s": 1.0,
+    "hop_s": 0.25,
+    "per_tone_threshold_db": 10,
+    "tones_required_per_set": 2,
+    "per_set_rule": "2_of_3_tones",
+    "trial_rule": "A_then_B_timed_order"
+  }
+}
