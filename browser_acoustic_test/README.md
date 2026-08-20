@@ -36,5 +36,6 @@ Browser and device behavior can still vary. The exported JSON records requested
 constraints, reported track settings, sampled probe frequencies, and detector
 results.
 
-The exported JSON is authoritative for scoring because it records the exact
-frequencies sampled in that browser run.
+The exported JSON records the exact frequencies sampled in that browser run.
+Use the offline Python scorer for the authoritative result. The browser result
+is a fast preview and samples fewer sideband frequencies.

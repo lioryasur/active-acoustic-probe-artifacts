@@ -1,7 +1,7 @@
 # Active Acoustic Probe Artifacts
 
-This is a curated release bundle for the paper **Active Acoustic Probes for
-Audio Deepfake Detection**. It contains the probe configuration and small
+This is a curated release bundle for the paper **Active Acoustic Probes for AI
+Voice Call Detection**. It contains the probe configuration and small
 reproduction scripts needed to generate and score the paper-style high-band
 active acoustic probe.
 
@@ -38,6 +38,12 @@ python scripts/generate_probe_wav.py
 python scripts/score_wav_with_probe_config.py generated/paper_probe.wav --metadata generated/paper_probe.json
 ```
 
+Run the detector tests with:
+
+```bash
+python -m unittest discover -s tests
+```
+
 To run a real local speaker-to-microphone acoustic test:
 
 ```bash
@@ -50,9 +56,10 @@ Then open `http://127.0.0.1:8766/`.
 
 The generator samples a fresh two-set high-band challenge from the configured
 frequency range. A seed can be supplied for reproducible examples. The detector
-code implements the paper-style scoring rule: for each target tone, it compares
-the spectral peak near the expected frequency with local sidebands, then applies
-a two-out-of-three rule to each of two ordered tone sets.
+code implements the paper scoring rule: for each target tone, it compares the
+spectral peak near the expected frequency with local sidebands. It then selects
+the ordered pair of windows that maximizes the weaker set's two-out-of-three
+score.
 
 This bundle is suitable for checking the detector implementation, generating
 probe examples, scoring exported recordings, and running a minimal local

@@ -41,8 +41,9 @@ speaker path, records the microphone return, scores it in-browser, and exports:
 python scripts/score_wav_with_probe_config.py path/to/browser_acoustic_probe.wav --metadata path/to/browser_acoustic_probe.json
 ```
 
-The offline script should agree with the browser result because the JSON records
-the exact random frequencies used for that run.
+The exported JSON records the exact random frequencies used for the run. Treat
+the offline Python result as authoritative. The browser uses a lighter Goertzel
+preview with sampled sidebands, so borderline scores may differ slightly.
 
 ## Scoring External WAVs
 

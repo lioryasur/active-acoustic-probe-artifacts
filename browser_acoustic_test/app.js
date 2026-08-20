@@ -164,17 +164,51 @@ function toneScore(frame, sampleRate, frequency) {
   return 20 * Math.log10((peak + 1e-12) / (sideband + 1e-12));
 }
 
+function selectBestOrderedWindows(scoredSets) {
+  let best = null;
+
+  function visit(setIndex, minimumWindowIndex, selected) {
+    if (setIndex === scoredSets.length) {
+      const aggregateScores = selected.map((result) => result.aggregate_score_db);
+      const weakestScore = Math.min(...aggregateScores);
+      const scoreSum = aggregateScores.reduce((sum, score) => sum + score, 0);
+      if (
+        !best ||
+        weakestScore > best.weakestScore ||
+        (weakestScore === best.weakestScore && scoreSum > best.scoreSum)
+      ) {
+        best = { results: selected.slice(), weakestScore, scoreSum };
+      }
+      return;
+    }
+
+    for (let windowIndex = minimumWindowIndex; windowIndex < scoredSets[setIndex].length; windowIndex += 1) {
+      selected.push(scoredSets[setIndex][windowIndex]);
+      visit(setIndex + 1, windowIndex + 1, selected);
+      selected.pop();
+    }
+  }
+
+  visit(0, 0, []);
+  return best;
+}
+
 function scoreRecording(audio, sampleRate, toneSets) {
   const detector = CONFIG.detector;
   const windowCount = Math.round(detector.windowS * sampleRate);
   const hopCount = Math.round(detector.hopS * sampleRate);
   const frames = [];
-  for (let start = 0; start + windowCount <= audio.length; start += hopCount) {
-    frames.push({ startS: start / sampleRate, frame: audio.slice(start, start + windowCount) });
+  const lastStart = audio.length - windowCount;
+  for (let start = 0; start <= lastStart; start += hopCount) {
+    frames.push({ start, startS: start / sampleRate, frame: audio.slice(start, start + windowCount) });
   }
-  const setResults = toneSets.map((set) => {
-    let best = null;
-    for (const item of frames) {
+  if (frames.length && frames[frames.length - 1].start !== lastStart) {
+    frames.push({ start: lastStart, startS: lastStart / sampleRate, frame: audio.slice(lastStart) });
+  }
+  if (!frames.length) throw new Error("Recording is shorter than the detector window.");
+
+  const scoredSets = toneSets.map((set) =>
+    frames.map((item) => {
       const scores = set.frequencies_hz.map((frequency) => ({
         frequency_hz: frequency,
         score_db: toneScore(item.frame, sampleRate, frequency),
@@ -190,17 +224,22 @@ function scoreRecording(audio, sampleRate, toneSets) {
         pass: passingTones >= detector.tonesRequiredPerSet,
         tones: scores,
       };
-      if (!best || result.aggregate_score_db > best.aggregate_score_db) best = result;
-    }
-    return best;
-  });
-  const timedOrderPass = setResults.every((result, index) => index === 0 || setResults[index - 1].start_s < result.start_s);
+      return result;
+    }),
+  );
+  const orderedSelection = selectBestOrderedWindows(scoredSets);
+  const setResults = orderedSelection
+    ? orderedSelection.results
+    : scoredSets.map((results) => results.reduce((best, result) =>
+      (result.aggregate_score_db > best.aggregate_score_db ? result : best), results[0]));
+  const timedOrderPass = Boolean(orderedSelection);
   return {
     sample_rate: sampleRate,
     duration_s: audio.length / sampleRate,
     tone_sets: toneSets,
     threshold_db: detector.perToneThresholdDb,
     set_results: setResults,
+    timed_score_db: orderedSelection ? orderedSelection.weakestScore : null,
     timed_order_pass: timedOrderPass,
     pass: timedOrderPass && setResults.every((result) => result.pass),
   };
