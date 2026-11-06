@@ -69,15 +69,11 @@ def generate_timed_probe(
     *,
     sample_rate: int,
     amplitude: float,
-    gap_s: float = 0.25,
     fade_s: float = 0.01,
 ) -> np.ndarray:
-    """Generate a probe consisting of ordered tone sets separated by silence."""
+    """Generate a probe consisting of ordered tone sets played back to back."""
     pieces: list[np.ndarray] = []
-    gap = np.zeros(int(round(float(sample_rate) * float(gap_s))), dtype=np.float64)
-    for index, tone_set in enumerate(tone_sets):
-        if index:
-            pieces.append(gap)
+    for tone_set in tone_sets:
         pieces.append(
             generate_tone_set(
                 tone_set["frequencies_hz"],

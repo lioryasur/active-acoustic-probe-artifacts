@@ -6,7 +6,6 @@ const CONFIG = {
   setsPerProbe: 2,
   tonesPerSet: 3,
   durationS: 1.0,
-  gapS: 0.25,
   detector: {
     peakSearchHz: 5,
     sidebandMinHz: 100,
@@ -68,13 +67,12 @@ function sampleToneSets(seed) {
 
 function createProbeBuffer(audioContext, toneSets, amplitude) {
   const sampleRate = audioContext.sampleRate;
-  const totalDuration = toneSets.reduce((sum, set) => sum + set.duration_s, 0) + CONFIG.gapS * (toneSets.length - 1);
+  const totalDuration = toneSets.reduce((sum, set) => sum + set.duration_s, 0);
   const frameCount = Math.ceil(totalDuration * sampleRate);
   const buffer = audioContext.createBuffer(1, frameCount, sampleRate);
   const data = buffer.getChannelData(0);
   let offset = 0;
   for (let setIndex = 0; setIndex < toneSets.length; setIndex += 1) {
-    if (setIndex > 0) offset += Math.round(CONFIG.gapS * sampleRate);
     const set = toneSets[setIndex];
     const count = Math.round(set.duration_s * sampleRate);
     const fadeCount = Math.min(Math.round(0.01 * sampleRate), Math.floor(count / 2));
