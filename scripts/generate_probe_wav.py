@@ -28,7 +28,6 @@ def main() -> None:
         tone_sets,
         sample_rate=sample_rate,
         amplitude=float(config["amplitude"]),
-        gap_s=float(config.get("gap_s", 0.25)),
     )
     write_wav_mono(args.output, sample_rate, audio)
     write_json(
@@ -39,7 +38,6 @@ def main() -> None:
             "tone_sets": tone_sets,
             "sample_rate": sample_rate,
             "amplitude": float(config["amplitude"]),
-            "gap_s": float(config.get("gap_s", 0.25)),
         },
     )
     print(f"Wrote {args.output} ({len(audio) / sample_rate:.3f} s at {sample_rate} Hz)")

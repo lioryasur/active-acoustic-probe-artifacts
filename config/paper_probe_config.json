@@ -2,7 +2,6 @@
   "probe_name": "timed_two_set_highband_probe",
   "sample_rate": 44100,
   "amplitude": 0.08,
-  "gap_s": 0.25,
   "random_probe": {
     "seed": 42,
     "frequency_range_hz": [5500, 7000],
