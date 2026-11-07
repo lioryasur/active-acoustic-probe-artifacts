@@ -5,6 +5,9 @@ Voice Call Detection**. It contains the probe configuration and small
 reproduction scripts needed to generate and score the paper-style high-band
 active acoustic probe.
 
+Paper: Lior Yasur and Yisroel Mirsky, *Active Acoustic Probes for AI Voice Call
+Detection*, 3D-Sec '26. https://doi.org/10.1145/3843205.3845633
+
 This bundle is intentionally smaller than the research workspace. It does not
 include raw WAV recordings, derived CSV result tables, private provider outputs,
 or exploratory scripts.
